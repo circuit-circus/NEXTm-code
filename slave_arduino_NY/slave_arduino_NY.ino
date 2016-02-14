@@ -12,20 +12,6 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
 #include <Wire.h>
 
 
-// PIR sensor
-int inputPin = 6; // choose the input pin (for PIR sensor)
-int pirState = LOW; // we start, assuming no motion detected
-int val = 0; // variable for reading the pin status
-
-
-// LIGHT PATTERN
-float persistence = 0.25; //persistence affects the degree to which the "finer" noise is seen
-int octaves = 1; //octaves are the number of "layers" of noise that get computed
-
-int cutoff;
-int activityDelay = 5; 
-
-
 String color = "";
 uint32_t c; 
 
