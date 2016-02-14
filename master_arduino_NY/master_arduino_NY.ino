@@ -9,11 +9,24 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
 
+// LEDs
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
+
+#define NEOPIN 9
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
+
+
 // MASTER-SLAVE CONNECTION
 #include <Wire.h>
 
 String readId =  "";    // Variable integer to keep if we have Successful Read from Reader
 String colorToSend = "";
+
+String color = "";
+uint32_t c; 
 
 byte readCard[4];    // Stores scanned ID read from RFID Module
 boolean programMode = false;  // initialize programming mode to false
@@ -26,6 +39,16 @@ void setup() {
 	mfrc522.PCD_Init();		// Init MFRC522
 
   Wire.begin(); // begin master-slave connection
+
+
+  // Something something LEDs ?
+  #if defined (__AVR_ATtiny85__)
+    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+  #endif
+
+  // Init LEDs
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
 
 }
 
@@ -48,15 +71,22 @@ void loop() {
 
 String idToColor(String id) {
 
-
   if (id == "36962234") {
-      return "green";
+    lightLED("green");
+    return "green";
+    
   } else if (id == "18020171235") {
-      return "red";
+    lightLED("red");
+    return "red";
+    
   } else if (id == "31588246") {
-      return "blue";
-  } else if (id == "311688246") {
-      return "white";
+    lightLED("blue");
+    return "blue";
+    
+  } else if (id == "311688246") {    
+    lightLED("white");
+    return "white";
+    
   } else {
       return "no color matched";
   }
@@ -83,3 +113,28 @@ String getID() {
   return id;
 }
 
+
+// Function to light the LEDs in the sent color
+void lightLED(String colorName) {
+
+  if(colorName == "red") {
+    c = strip.Color(255, 0, 0);
+  
+  } else if(colorName == "green") {
+    c = strip.Color(0, 255, 0);
+  
+  } else if(colorName == "blue") {
+    c = strip.Color(0, 0, 255);
+  
+  } else if(colorName == "white") {
+    c = strip.Color(255, 255, 255);
+  }
+
+  // Loop though LEDs and light them
+  for(uint16_t i=0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, c);
+    strip.show();
+    delay(50);
+  }
+
+}
