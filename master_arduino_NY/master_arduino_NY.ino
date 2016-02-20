@@ -8,7 +8,7 @@
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
-
+/*
 // LEDs
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
@@ -17,7 +17,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
 #define NEOPIN 9
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
-
+*/
 
 // MASTER-SLAVE CONNECTION
 #include <Wire.h>
@@ -25,8 +25,10 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
 String readId =  "";    // Variable integer to keep if we have Successful Read from Reader
 String colorToSend = "";
 
+/*
 String color = "";
 uint32_t c; 
+*/
 
 byte readCard[4];    // Stores scanned ID read from RFID Module
 boolean programMode = false;  // initialize programming mode to false
@@ -41,6 +43,7 @@ void setup() {
   Wire.begin(); // begin master-slave connection
 
 
+  /*
   // Something something LEDs ?
   #if defined (__AVR_ATtiny85__)
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
@@ -49,6 +52,7 @@ void setup() {
   // Init LEDs
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  */
 
 }
 
@@ -58,6 +62,7 @@ void loop() {
     if(readId.length() > 0) {
 
       colorToSend = idToColor(readId);
+      //Serial.println(colorToSend);
      
       Wire.beginTransmission(8); // transmit to device #8
       //Wire.write(colorToSend.c_str());        // sends one byte
@@ -72,19 +77,19 @@ void loop() {
 String idToColor(String id) {
 
   if (id == "36962234") {
-    lightLED("green");
+    //lightLED("green");
     return "green";
     
   } else if (id == "18020171235") {
-    lightLED("red");
+    //lightLED("red");
     return "red";
     
   } else if (id == "31588246") {
-    lightLED("blue");
+    //lightLED("blue");
     return "blue";
     
   } else if (id == "311688246") {    
-    lightLED("white");
+    //lightLED("white");
     return "white";
     
   } else {
@@ -113,7 +118,7 @@ String getID() {
   return id;
 }
 
-
+/*
 // Function to light the LEDs in the sent color
 void lightLED(String colorName) {
 
@@ -136,5 +141,5 @@ void lightLED(String colorName) {
     strip.show();
     delay(50);
   }
-
 }
+*/
