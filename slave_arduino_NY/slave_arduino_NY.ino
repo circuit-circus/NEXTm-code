@@ -41,7 +41,7 @@ int val = 0; // variable for reading the pin status
 #include <Wire.h>
 
 int cutoff;
-int activityDelay = 2; 
+int activityDelay = 1; 
 
 String color = "";
 uint32_t c; 
@@ -77,7 +77,7 @@ void loop() {
   cutoff = max(min(cutoff, 100 * activityDelay), 0);
   int activity = cutoff / activityDelay;
    
-  //Serial.println(activity); 
+  Serial.println(activity); 
   for (int i=0; i < longStrip.numPixels(); i++) {
     //y2 = map(PerlinNoise2(i,y1,persistence,octaves), -1.0, 1.0, 50.0, 255.0);
     float contrast = PerlinNoise2(i,rnd,persistence,octaves)*128+128;
@@ -87,9 +87,9 @@ void loop() {
     contrast = min(contrast*((255+activity)/(255-activity)), 255);
     contrast = map(contrast, 0, 255, 1, 55+activity*2);
     
-    byte r = contrast + redOffset;
-    byte g = contrast + greenOffset;
-    byte b = contrast + blueOffset;
+    byte r = max(0,min(255,contrast * redOffset));
+    byte g = max(0,min(255,contrast * greenOffset));
+    byte b = max(0,min(255,contrast * blueOffset));
     
     longStrip.setPixelColor(i,Color(r,g,b));
   }
@@ -145,24 +145,34 @@ void receiveEvent(int howMany) {
 void changeColor(String colorName) {
 
   if(colorName == "red") {
-    redOffset = 150;
-    greenOffset = 0;
-    blueOffset = 0;
+    redOffset = 1.5;
+    greenOffset = 0.75;
+    blueOffset = 0.75;
   
   } else if(colorName == "green") {
-    redOffset = 0;
-    greenOffset = 150;
-    blueOffset = 0;
+    redOffset = 0.75;
+    greenOffset = 1.5;
+    blueOffset = 0.75;
   
   } else if(colorName == "blue") {
-    redOffset = 0;
-    greenOffset = 0;
-    blueOffset = 150;
+    redOffset = 0.75;
+    greenOffset = 0.75;
+    blueOffset = 1.5;
+
+  } else if(colorName == "orange") {
+    redOffset = 1.25;
+    greenOffset = 1;
+    blueOffset = 0.75;
+
+  } else if(colorName == "purple") {
+    redOffset = 1.15;
+    greenOffset = 0.8;
+    blueOffset = 1.05;
   
   } else if(colorName == "white") {
-    redOffset = 0;
-    greenOffset = 0;
-    blueOffset = 0;
+    redOffset = 1;
+    greenOffset = 1;
+    blueOffset = 1;
   }
 }
 
