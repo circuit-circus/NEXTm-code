@@ -41,10 +41,12 @@ int val = 0; // variable for reading the pin status
 #include <Wire.h>
 
 int cutoff;
-int activityDelay = 5; 
+int activityDelay = 2; 
 
 String color = "";
 uint32_t c; 
+
+int redOffset, greenOffset, blueOffset = 0;
 
 
 void setup() {
@@ -75,7 +77,7 @@ void loop() {
   cutoff = max(min(cutoff, 100 * activityDelay), 0);
   int activity = cutoff / activityDelay;
    
-  Serial.println(activity); 
+  //Serial.println(activity); 
   for (int i=0; i < longStrip.numPixels(); i++) {
     //y2 = map(PerlinNoise2(i,y1,persistence,octaves), -1.0, 1.0, 50.0, 255.0);
     float contrast = PerlinNoise2(i,rnd,persistence,octaves)*128+128;
@@ -85,9 +87,9 @@ void loop() {
     contrast = min(contrast*((255+activity)/(255-activity)), 255);
     contrast = map(contrast, 0, 255, 1, 55+activity*2);
     
-    byte r = contrast * (activity / 100.0);
-    byte g = contrast * ((100 - activity) / 100.0);
-    byte b = 0;
+    byte r = contrast + redOffset;
+    byte g = contrast + greenOffset;
+    byte b = contrast + blueOffset;
     
     longStrip.setPixelColor(i,Color(r,g,b));
   }
@@ -117,7 +119,7 @@ void loop() {
   longStrip.show();
   neoStrip.show();
   //analogWrite(6,n);
-  delay(100);
+  delay(1);
 }
 
 // Function that executes whenever data is received from master
@@ -135,33 +137,35 @@ void receiveEvent(int howMany) {
 
   // Turn on LEDs in the recieved color
   //lightLED(color);
+  changeColor(color);
 }
 
-/*
+
 // Function to light the LEDs in the recieved color
-void lightLED(String colorName) {
+void changeColor(String colorName) {
 
   if(colorName == "red") {
-    c = strip.Color(255, 0, 0);
+    redOffset = 150;
+    greenOffset = 0;
+    blueOffset = 0;
   
   } else if(colorName == "green") {
-    c = strip.Color(0, 255, 0);
+    redOffset = 0;
+    greenOffset = 150;
+    blueOffset = 0;
   
   } else if(colorName == "blue") {
-    c = strip.Color(0, 0, 255);
+    redOffset = 0;
+    greenOffset = 0;
+    blueOffset = 150;
   
   } else if(colorName == "white") {
-    c = strip.Color(255, 255, 255);
-  }
-
-  // Loop though LEDs and light them
-  for(uint16_t i=0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
-    strip.show();
-    delay(50);
+    redOffset = 0;
+    greenOffset = 0;
+    blueOffset = 0;
   }
 }
-*/
+
 
 float PerlinNoise2(float x, float y, float persistance, int octaves) {
   float frequency, amplitude;

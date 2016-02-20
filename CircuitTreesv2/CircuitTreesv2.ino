@@ -32,7 +32,7 @@ int inputPin = 6; // choose the input pin (for PIR sensor)
 int pirState = LOW; // we start, assuming no motion detected
 int val = 0; // variable for reading the pin status
 
-byte leds[25];
+
 
 //persistence affects the degree to which the "finer" noise is seen
 float persistence = 0.25;
