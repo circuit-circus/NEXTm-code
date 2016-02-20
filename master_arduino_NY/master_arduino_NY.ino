@@ -8,16 +8,16 @@
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
-/*
+
 // LEDs
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
 
-#define NEOPIN 9
+#define NEOPIN 2
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
-*/
+
 
 // MASTER-SLAVE CONNECTION
 #include <Wire.h>
@@ -25,10 +25,10 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
 String readId =  "";    // Variable integer to keep if we have Successful Read from Reader
 String colorToSend = "";
 
-/*
+
 String color = "";
 uint32_t c; 
-*/
+
 
 byte readCard[4];    // Stores scanned ID read from RFID Module
 boolean programMode = false;  // initialize programming mode to false
@@ -43,7 +43,7 @@ void setup() {
   Wire.begin(); // begin master-slave connection
 
 
-  /*
+  
   // Something something LEDs ?
   #if defined (__AVR_ATtiny85__)
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
@@ -52,7 +52,7 @@ void setup() {
   // Init LEDs
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  */
+  
 
 }
 
@@ -62,7 +62,7 @@ void loop() {
     if(readId.length() > 0) {
 
       colorToSend = idToColor(readId);
-      //Serial.println(colorToSend);
+      Serial.println(colorToSend);
      
       Wire.beginTransmission(8); // transmit to device #8
       //Wire.write(colorToSend.c_str());        // sends one byte
@@ -77,20 +77,24 @@ void loop() {
 String idToColor(String id) {
 
   if (id == "36962234") {
-    //lightLED("green");
+    lightLED("green");
     return "green";
     
   } else if (id == "18020171235") {
-    //lightLED("red");
+    lightLED("red");
     return "red";
     
   } else if (id == "31588246") {
-    //lightLED("blue");
+    lightLED("blue");
     return "blue";
     
   } else if (id == "311688246") {    
-    //lightLED("white");
-    return "white";
+    lightLED("purple");
+    return "purple";
+
+  } else if (id == "19318510") {    
+    lightLED("orange");
+    return "orange";
     
   } else {
       return "no color matched";
@@ -118,7 +122,7 @@ String getID() {
   return id;
 }
 
-/*
+
 // Function to light the LEDs in the sent color
 void lightLED(String colorName) {
 
@@ -131,10 +135,15 @@ void lightLED(String colorName) {
   } else if(colorName == "blue") {
     c = strip.Color(0, 0, 255);
   
-  } else if(colorName == "white") {
+  } else if(colorName == "purple") {
+    c = strip.Color(180, 10, 230);
+    
+  } else if(colorName == "orange") {
+    c = strip.Color(245, 210, 10);
+ 
+  } else {
     c = strip.Color(255, 255, 255);
   }
-
   // Loop though LEDs and light them
   for(uint16_t i=0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
@@ -142,4 +151,5 @@ void lightLED(String colorName) {
     delay(50);
   }
 }
-*/
+
+
