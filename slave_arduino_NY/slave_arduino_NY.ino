@@ -10,7 +10,7 @@
 #include "SPI.h"
 #include "Adafruit_WS2801.h"
 
-uint8_t dataPin  = 2;    // Yellow wire on Adafruit Pixels
+uint8_t dataPin  = 4;    // Yellow wire on Adafruit Pixels
 uint8_t clockPin = 3;    // Green wire on Adafruit Pixels
 
 #define NEOPIN 9

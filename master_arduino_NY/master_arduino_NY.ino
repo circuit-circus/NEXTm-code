@@ -16,7 +16,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 #endif
 
 #define NEOPIN 2
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(4, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 
 // MASTER-SLAVE CONNECTION
@@ -76,23 +76,23 @@ void loop() {
 
 String idToColor(String id) {
 
-  if (id == "36962234") {
+  if (id == "4264518") {
     lightLED("green");
     return "green";
     
-  } else if (id == "18020171235") {
+  } else if (id == "4234518") {
     lightLED("red");
     return "red";
     
-  } else if (id == "31588246") {
+  } else if (id == "4224518") {
     lightLED("blue");
     return "blue";
     
-  } else if (id == "311688246") {    
+  } else if (id == "4194518") {    
     lightLED("purple");
     return "purple";
 
-  } else if (id == "19318510") {    
+  } else if (id == "4214518") {    
     lightLED("orange");
     return "orange";
     
@@ -117,7 +117,9 @@ String getID() {
     readCard[i] = mfrc522.uid.uidByte[i];
     id += readCard[i];
   }
- 
+
+  Serial.println(id);
+  
   mfrc522.PICC_HaltA(); // Stop reading
   return id;
 }
