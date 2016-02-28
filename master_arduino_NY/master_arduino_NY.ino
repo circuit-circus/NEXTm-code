@@ -28,6 +28,8 @@ String colorToSend = "";
 
 String color = "";
 uint32_t c;
+int Rnew, Gnew, Bnew;
+int curRed, curGreen, curBlue = 255;
 
 byte readCard[4];    // Stores scanned ID read from RFID Module
 boolean programMode = false;  // initialize programming mode to false
@@ -50,6 +52,8 @@ void setup() {
 #if defined (__AVR_ATtiny85__)
   if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
 #endif
+
+  strip.setBrightness(50);
 
   // Init LEDs
   strip.begin();
@@ -74,11 +78,10 @@ void loop() {
   }
   while (readId.length() > 0);   // the program will not go further while you not get a successful read
 
-  if ( millis() - savedTime >= 5000 && counting == true && shouldTurnOn == false) {
+  if ( millis() - savedTime >= 4000 && counting == true && shouldTurnOn == false) {
     counting = false;
     shouldTurnOn = true;
-    fadeLED(255, 255, 0, 255, 0, 255, 100);
-    delay(5000);
+    fadeLED(curRed, 255, curGreen, 255, curBlue, 255, 100);
   }
 }
 
@@ -139,19 +142,19 @@ void lightLED(String colorName) {
   shouldTurnOn = false;
 
   if (colorName == "red") {
-    c = strip.Color(255, 0, 0);
-    fadeLED(255, 255, 255, 0, 255, 0, 30);
+    //c = strip.Color(255, 0, 0);
+    fadeLED(curRed, 255, curGreen, 0, curBlue, 0, 30);
 
 
   } else if (colorName == "green") {
     //c = strip.Color(0, 255, 0);
 
-    fadeLED(255, 0, 255, 255, 255, 0, 30);
+    fadeLED(curRed, 0, curGreen, 255, curBlue, 0, 30);
 
   } else if (colorName == "blue") {
     //c = strip.Color(0, 0, 255);
 
-    fadeLED(255, 0, 255, 0, 255, 255, 30);
+    fadeLED(curRed, 0, curGreen, 0, curBlue, 255, 30);
 
   } else if (colorName == "purple") {
     //c = strip.Color(180, 10, 230);
@@ -161,20 +164,13 @@ void lightLED(String colorName) {
   } else if (colorName == "orange") {
     //c = strip.Color(245, 210, 10);
 
-    fadeLED(255, 245, 255, 210, 255, 10, 30);
+    fadeLED(curRed, 245, curGreen, 210, curBlue, 10, 30);
 
   } else {
     //c = strip.Color(255, 255, 255);
-    fadeLED(255, 255, 255, 255, 255, 255, 30);
+    fadeLED(curRed, 255, curGreen, 255, curBlue, 255, 30);
   }
 
-  /*
-    // Loop though LEDs and light them
-    for(uint16_t i=0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
-    }
-    strip.show();
-  */
 }
 
 void fadeLED(int Rstart, int Rend, int Gstart, int Gend, int Bstart, int Bend, int fadeTime) {
@@ -184,9 +180,9 @@ void fadeLED(int Rstart, int Rend, int Gstart, int Gend, int Bstart, int Bend, i
 
   int n = fadeTime;
   for (int i = 0; i < n; i++) { // larger values of 'n' will give a smoother/slower transition.
-    int Rnew = Rstart + (Rend - Rstart) * i / n;
-    int Gnew = Gstart + (Gend - Gstart) * i / n;
-    int Bnew = Bstart + (Bend - Bstart) * i / n;
+    Rnew = Rstart + (Rend - Rstart) * i / n;
+    Gnew = Gstart + (Gend - Gstart) * i / n;
+    Bnew = Bstart + (Bend - Bstart) * i / n;
 
     for (uint16_t j = 0; j < strip.numPixels(); j++) {
       strip.setPixelColor(j, Rnew, Gnew, Bnew);
@@ -194,5 +190,9 @@ void fadeLED(int Rstart, int Rend, int Gstart, int Gend, int Bstart, int Bend, i
     strip.show();
     delay(10);
   }
+
+  curRed = Rnew;
+  curGreen = Gnew;
+  curBlue = Bnew;
 }
 
