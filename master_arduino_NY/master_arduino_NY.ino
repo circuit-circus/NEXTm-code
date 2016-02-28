@@ -53,8 +53,6 @@ void setup() {
   if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
 #endif
 
-  strip.setBrightness(50);
-
   // Init LEDs
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
