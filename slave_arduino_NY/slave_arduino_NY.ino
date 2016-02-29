@@ -46,7 +46,7 @@ int activityDelay = 1;
 String color = "";
 uint32_t c; 
 
-int redOffset, greenOffset, blueOffset = 0;
+int redOffset, greenOffset, blueOffset, redOffsetNeo, greenOffsetNeo, blueOffsetNeo = 0;
 
 
 void setup() {
@@ -95,7 +95,7 @@ void loop() {
   }
   
   for (int i=0; i < neoStrip.numPixels(); i++) {
-    if (val == HIGH) {
+    //if (val == HIGH) {
       //y2 = map(PerlinNoise2(i,y1,persistence,octaves), -1.0, 1.0, 50.0, 255.0);
       float contrast = PerlinNoise2(i,rnd,persistence,octaves)*128+128;
       
@@ -104,16 +104,16 @@ void loop() {
       contrast = min(contrast*((255+activity)/(255-activity)), 255);
       contrast = map(contrast, 0, 255, 1, 55+activity*2);
       
-      byte r = contrast * (activity / 100.0);
-      byte g = contrast * ((100 - activity) / 100.0); 
-      byte b = constrain((contrast * (activity / 100.0)),0,50);
+      byte r = max(0,min(255,contrast * redOffsetNeo ));
+      byte g = max(0,min(255,contrast * greenOffsetNeo ));
+      byte b = max(0,min(255,contrast * blueOffsetNeo ));
     
       neoStrip.setPixelColor(i,Color(r,g,b));
-   }
+   //}
     
-   else {
-    neoStrip.setPixelColor(i,Color(0,0,0));
-   }
+   //else {
+   // neoStrip.setPixelColor(i,Color(0,0,0));
+   //}
   }    
 
   longStrip.show();
@@ -148,26 +148,46 @@ void changeColor(String colorName) {
     redOffset = 1.5;
     greenOffset = 0.75;
     blueOffset = 0.75;
+
+    redOffsetNeo = 1.15;
+    greenOffsetNeo = 0.0;
+    blueOffsetNeo = 1.05;
   
   } else if(colorName == "green") {
     redOffset = 0.75;
     greenOffset = 1.5;
     blueOffset = 0.75;
+
+    redOffsetNeo = 1;
+    greenOffsetNeo = 1.4;
+    blueOffsetNeo = 0.6;
   
   } else if(colorName == "blue") {
     redOffset = 0.75;
     greenOffset = 0.75;
     blueOffset = 1.5;
 
+    redOffsetNeo = 0.75;
+    greenOffsetNeo = 1.5;
+    blueOffsetNeo = 0.75;
+
   } else if(colorName == "orange") {
-    redOffset = 1.25;
-    greenOffset = 1;
-    blueOffset = 0.75;
+    redOffset = 1.7;
+    greenOffset = 1.3;
+    blueOffset = 0;
+
+    redOffsetNeo = 1.5;
+    greenOffsetNeo = 0.75;
+    blueOffsetNeo = 0.75;
 
   } else if(colorName == "purple") {
     redOffset = 1.15;
     greenOffset = 0.8;
     blueOffset = 1.05;
+
+    redOffsetNeo = 0.75;
+    greenOffsetNeo = 0.75;
+    blueOffsetNeo = 1.5;
   
   } else if(colorName == "white") {
     redOffset = 1;
