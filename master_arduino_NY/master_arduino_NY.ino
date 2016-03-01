@@ -68,7 +68,6 @@ void loop() {
       Serial.println(colorToSend);
 
       Wire.beginTransmission(8); // transmit to device #8
-      //Wire.write(colorToSend.c_str());        // sends one byte
       Wire.write(colorToSend.c_str());        // sends one byte
       Wire.endTransmission();    // stop transmitting
       delay(500);
@@ -105,8 +104,8 @@ String idToColor(String id) {
     lightLED("orange");
     return "orange";
 
-  } else {
-    return "no color matched";
+  } else if (id == "4244518") {
+    return "partymode";
   }
 }
 

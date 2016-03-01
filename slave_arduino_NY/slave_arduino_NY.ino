@@ -34,8 +34,10 @@ int inputPin = 6; // choose the input pin (for PIR sensor)
 int pirState = LOW; // we start, assuming no motion detected
 int val = 0; // variable for reading the pin status
 
-
-
+boolean partyMode = false;
+String partyColor = "blue";
+long savedTime;
+long randomTime;
 
 // Communication with master
 #include <Wire.h>
@@ -66,9 +68,26 @@ void setup() {
   neoStrip.begin();
   longStrip.show();
   neoStrip.show();
+
+  randomTime = random(3000, 5000);
 }
 
 void loop() {
+
+  // If the partymode tag has been activated
+  if(partyMode == true && millis() - savedTime >= randomTime) {
+    savedTime = millis();
+    randomTime = random(3000, 5000);
+
+    if(partyColor == "blue") {
+      partyColor = "orange";
+    } else {
+      partyColor = "blue";
+    }
+
+    changeColor(partyColor);
+  }
+  
   float rnd = float(millis())/100.0f;
 
   val = digitalRead(inputPin); // read input value
@@ -135,9 +154,14 @@ void receiveEvent(int howMany) {
 
   Serial.println(color);
 
-  // Turn on LEDs in the recieved color
-  //lightLED(color);
-  changeColor(color);
+  if(color == "partymode") {
+    partyMode = true;
+  } else {
+    // Turn on LEDs in the recieved color
+    partyMode = false;
+    changeColor(color);
+  }
+  
 }
 
 
